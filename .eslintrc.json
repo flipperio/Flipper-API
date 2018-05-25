@@ -15,6 +15,7 @@
 		"no-plusplus": 0,
         "guard-for-in": 0,
 		"import/no-extraneous-dependencies": 0,
+        "linebreak-style": ['error', 'windows'],
 		"object-curly-newline": ["error", {"consistent":true}],
 		"space-before-function-paren": ["error", "never"],
 		"indent": ["error", "tab", {"MemberExpression": "off"}],
