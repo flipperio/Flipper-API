@@ -74,6 +74,10 @@ module.exports = function(app, { httpError, Post, Star, queryValidator, path = '
 		for (const resultArray of req.results) {
 			for (const result of resultArray) {
 				const post = result.post;
+				// temp fix for comments without parents -> see Trello for relevant card
+				if (!post || Object.keys(post) === 0) {
+					continue;
+				}
 				post.id = post._id;
 				delete post._id;
 
@@ -87,6 +91,8 @@ module.exports = function(app, { httpError, Post, Star, queryValidator, path = '
 				}
 			}
 		}
+
+		req.results = joinedResults;
 
 		next();
 	}
@@ -133,64 +139,6 @@ module.exports = function(app, { httpError, Post, Star, queryValidator, path = '
 	function respond(req, res) {
 		res.status(200).json(req.results);
 	}
-
-	//
-	// .then(function(resultGroups) {
-	// 	// join the results, trim properties, and remove duplicates
-	// 	const joinedResults = [];
-	//
-	// 	for (const results of resultGroups) {
-	// 		for (const result of results) {
-	// 			const post = result.post;
-	// 			post.id = post._id;
-	// 			delete post._id;
-	//
-	// 			// Both aggregation pipelines may have returned the same post
-	// 			const isDuplicate = joinedResults.some(joinedPost =>
-	// 				joinedPost.id.toString() === post.id.toString());
-	// 				if (isDuplicate === false) {
-	// 					joinedResults.push(post);
-	// 				}
-	// 			}
-	// 		}
-	//
-	// 		return joinedResults;
-	// 	})
-	// 	.then(function(results) {
-	// 		// get the star and comment counts for each post
-	// 		const countResolutions = [];
-	//
-	// 		results.forEach(function(post) {
-	// 			if (post.comments === undefined) {
-	// 				const resolveCommentCount = Post.count({ parent: post.id }).exec().then(function(comments) {
-	// 					post.comments = comments;
-	// 					return post;
-	// 				});
-	//
-	// 				countResolutions.push(resolveCommentCount);
-	// 			}
-	// 			if (post.stars === undefined) {
-	// 				const resolveCommentCount = Star.count({ parent: post.id }).exec().then(function(stars) {
-	// 					post.stars = stars;
-	// 					return post;
-	// 				});
-	//
-	// 				countResolutions.push(resolveCommentCount);
-	// 			}
-	// 		});
-	//
-	// 		return Promise.all(countResolutions);
-	// 	})
-	// 	.then(
-	// 		function(finalResults) {
-	// 			res.status(200).json(finalResults);
-	// 		},
-	// 		function(queryErr) {
-	// 			next(httpError.build('internal', { source: 'DATABASE', batch: true, errorObject: queryErr }));
-	// 		},
-	// 	)
-	// 	.catch(err => next(err));
-	// }
 
 	app.get(path, [validator, aggregate, joinResults, resolveCounts, respond]);
 };
