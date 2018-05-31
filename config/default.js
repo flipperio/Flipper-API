@@ -15,11 +15,11 @@ const config = {
 	post: {
 		title: {
 			minLen: 4,
-			maxLen: 40,
+			maxLen: 46,
 		},
 		body: {
 			minLen: 12,
-			maxLen: 200,
+			maxLen: 290,
 		},
 	},
 	paging: {
