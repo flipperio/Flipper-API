@@ -6,7 +6,7 @@ module.exports = function(app, { httpError, Star, queryValidator, path = '/posts
 
 	function route(req, res, next) {
 		if (req.body.star === false) {
-			return res.status(200).json({});
+			return res.status(200).json({ star: false });
 		}
 
 		const parentPost = req.post;
@@ -16,7 +16,7 @@ module.exports = function(app, { httpError, Star, queryValidator, path = '/posts
 				return next(httpError.build('internal', { source: 'DATABASE', errorObject: err }));
 			}
 
-			res.status(200).json();
+			res.status(200).json({ star: true });
 		});
 	}
 	app.post(path, [validator, route]);

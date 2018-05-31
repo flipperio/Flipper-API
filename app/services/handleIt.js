@@ -115,7 +115,7 @@ module.exports = (function() {
 		}
 
 		if (settings.logger) {
-			settings.logger.log(data.level, data.message, data.meta, function() {
+			settings.logger.log(data.level, data.meta.error || data.message, data.meta, function() {
 				if (data.meta.exit === true) {
 					process.kill(process.pid, settings.exitSignal);
 				}
