@@ -8,7 +8,7 @@ module.exports = function(app, { httpError, Post, Star, queryValidator, path = '
 	function route(req, res, next) {
 		const query = req.query;
 
-		const findConditions = { category: query.category };
+		const findConditions = { category: query.category, parent: null };
 		const findOptions = { sort: '-timestamp', skip: (query.page - 1) * query.count, limit: query.count };
 
 		Post.find(findConditions, null, findOptions).exec(function(queryErr, results) {

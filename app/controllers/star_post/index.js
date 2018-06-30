@@ -5,13 +5,15 @@ module.exports = function(app, { httpError, Star, queryValidator, path = '/posts
 	const validator = queryValidator(httpError, querySchema, validationOptions, 'body');
 
 	function route(req, res, next) {
-		if (req.body.star === false) {
+		if (req.post.parent) {
+			const httpErr = httpError.build('query', { message: 'Cannot star a comment' });
+			return next(httpErr);
+		}
+		else if (req.body.star === false) {
 			return res.status(200).json({ star: false });
 		}
 
-		const parentPost = req.post;
-
-		Star.create({ parent: parentPost._id, category: parentPost.category }, function(err) {
+		Star.create({ parent: req.post._id, category: req.post.category }, function(err) {
 			if (err) {
 				return next(httpError.build('internal', { source: 'DATABASE', errorObject: err }));
 			}
